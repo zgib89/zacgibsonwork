@@ -13,13 +13,17 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#050607" />
   <link rel="canonical" href="https://zacgibson.work/westfall/" />
+  <link rel="icon" href="https://zacgibson.work/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="https://zacgibson.work/favicon.png" />
+  <link rel="apple-touch-icon" href="https://zacgibson.work/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/westfall/styles.css?v=20260515b" />
+  <link rel="stylesheet" href="/westfall/styles.css?v=20260515c" />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Book","name":"WESTFALL","author":{"@type":"Person","name":"Zac Gibson"},"genre":"Modern conspiracy thriller","description":"An active operator joins Brellford under false authority and discovers that the orders were the trap.","url":"https://zacgibson.work/westfall/book/"}</script>
 </head>
-<body class="westfall-page">
+<body class="westfall-page wf-route-home">
+  <a class="wf-skip" href="#main">Skip to case file</a>
   <div class="wf-shell">
     <header class="wf-topbar">
       <div class="wf-topbar__inner">
@@ -41,10 +45,21 @@
 
     <main id="main">
       <section class="wf-hero">
+        <div class="wf-hero__weather" aria-hidden="true"></div>
+        <div class="wf-hero__case-rail" aria-hidden="true">
+          <span class="wf-rail-label">BRELLFORD / PUBLIC BRIEF</span>
+          <span>Terminal 7 contradicts the handler narrative.</span>
+          <span>Branch 7 stops being a rumor and becomes a roster.</span>
+          <span>ALL IN turns trust into evidence.</span>
+        </div>
         <div class="wf-hero__inner">
           <p class="wf-kicker">Book-first case-file thriller</p>
           <h1>WESTFALL</h1>
-          <p class="wf-deck">A modern conspiracy thriller about Silas Westfall, an active operator who joins Brellford under false authority and discovers that the orders were the trap.</p>
+          <p class="wf-deck">A modern conspiracy thriller about an active operator, a handler's false authority, and the proof that turns orders into evidence.</p>
+          <div class="wf-hero__actions wf-hero__actions--lead">
+            <a class="wf-button wf-button--solid" href="/westfall/case-file/">Enter The Case File</a>
+            <a class="wf-button" href="/westfall/lore/">Open Lore Dossiers</a>
+          </div>
         </div>
       </section>
 
@@ -72,8 +87,8 @@
               <p class="wf-label">Ordinary surfaces, catastrophic meaning</p>
               <h2 class="wf-heading">The lie is not a twist. It is a system.</h2>
               <div class="wf-copy">
-                <p>WESTFALL follows a man trained to read rooms, survive pressure, and obey orders that sound legitimate until the evidence starts arriving out of sequence.</p>
-                <p>The public site now behaves the same way: clean hook first, spoiler-labeled case files second, deeper dossiers only when the reader chooses to open them.</p>
+                <p>Silas Westfall is trained to survive pressure, read rooms, and trust a chain of command that sounds legitimate until ordinary proof starts contradicting it.</p>
+                <p>The story does not ask the reader to believe in a conspiracy because someone says the word. It builds the case through a public computer, a roster, a cache, a witness, and records that make the official version impossible.</p>
               </div>
               <blockquote class="wf-quote">The orders were the trap.</blockquote>
             </div>
@@ -200,7 +215,7 @@
             <a class="wf-panel" href="/westfall/lore/ellison/">
               <span class="wf-tagline">Architecture</span>
               <h3>Ellison</h3>
-              <p>The architecture above Owen. Name carefully. Do not overexplain early.</p>
+              <p>A name at the ceiling of Owen's chain, visible only where the case file has earned it.</p>
               
             </a>
           </div>
@@ -265,7 +280,7 @@
         <div>
           <h2>WESTFALL</h2>
           <p>A modern conspiracy thriller by Zac Gibson.</p>
-          <p class="wf-mini">Meridian is a hidden program inside Brellford. If a page makes it look public, the page is wrong.</p>
+          <!-- Canon guardrail: Meridian is a hidden program inside Brellford, not a public brand. -->
         </div>
         <div>
           <h3>Explore</h3>
@@ -288,6 +303,6 @@
       </div>
     </footer>
   </div>
-  <script src="/westfall/app.js?v=20260515b" defer></script>
+  <script src="/westfall/app.js?v=20260515c" defer></script>
 </body>
 </html>

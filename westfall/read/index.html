@@ -13,13 +13,17 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#050607" />
   <link rel="canonical" href="https://zacgibson.work/westfall/read/" />
+  <link rel="icon" href="https://zacgibson.work/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="https://zacgibson.work/favicon.png" />
+  <link rel="apple-touch-icon" href="https://zacgibson.work/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/westfall/styles.css?v=20260515b" />
+  <link rel="stylesheet" href="/westfall/styles.css?v=20260515c" />
   
 </head>
-<body class="westfall-page">
+<body class="westfall-page wf-route-homeread">
+  <a class="wf-skip" href="#main">Skip to case file</a>
   <div class="wf-shell">
     <header class="wf-topbar">
       <div class="wf-topbar__inner">
@@ -41,10 +45,16 @@
 
     <main id="main">
       <section class="wf-hero wf-hero--plain">
+        <div class="wf-hero__weather" aria-hidden="true"></div>
+        
         <div class="wf-hero__inner">
           <p class="wf-kicker">Read / sample</p>
           <h1 class="wf-page-title">Read WESTFALL</h1>
           <p class="wf-deck">Start with pressure. Leave with questions.</p>
+          <div class="wf-hero__actions wf-hero__actions--lead">
+            <a class="wf-button wf-button--solid" href="/westfall/case-file/">Enter The Case File</a>
+            <a class="wf-button" href="/westfall/">Back To WESTFALL</a>
+          </div>
         </div>
       </section>
 
@@ -106,7 +116,7 @@
         <div>
           <h2>WESTFALL</h2>
           <p>A modern conspiracy thriller by Zac Gibson.</p>
-          <p class="wf-mini">Meridian is a hidden program inside Brellford. If a page makes it look public, the page is wrong.</p>
+          <!-- Canon guardrail: Meridian is a hidden program inside Brellford, not a public brand. -->
         </div>
         <div>
           <h3>Explore</h3>
@@ -129,6 +139,6 @@
       </div>
     </footer>
   </div>
-  <script src="/westfall/app.js?v=20260515b" defer></script>
+  <script src="/westfall/app.js?v=20260515c" defer></script>
 </body>
 </html>

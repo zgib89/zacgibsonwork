@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const root = process.cwd();
-const version = "20260515b";
+const version = "20260515c";
 const baseUrl = "https://zacgibson.work";
 const heroImage = `${baseUrl}/assets/westfall-BoOvYqP9.webp`;
 
@@ -131,7 +131,7 @@ const timeline = [
   ["where-are-they", "Where Are They", "Owen is forced to answer inside the system he thought he controlled.", "interrogation,dead-man switch,Marcus"],
   ["all-in", "ALL IN", "The chip returns as proof of the relationship that made the lie work.", "Owen office,receipt,betrayal"],
   ["go-home-route", "Go Home", "A westbound drive carries grief, proof, and a waypoint across the continent.", "I-70,Colorado,Garmin"],
-  ["the-receipt", "The Receipt", "After the credits, the architecture above the architecture moves.", "Ellison,unknown figure,Season 2"]
+  ["the-receipt", "The Receipt", "After the credits, the architecture above the architecture moves.", "Ellison,unidentified figure,Season 2"]
 ].map(([slug, title, line, tags], index) => ({
   slug,
   chapter: index + 1,
@@ -298,7 +298,7 @@ const compactDossiers = [
   ["jessi", "Jessi", "Person", "Heavy", "The person who makes trust feel possible before proof makes it dangerous.", ["Levels", "The Rooftop", "The Kitchen Floor"]],
   ["marcus", "Marcus", "Person", "Heavy", "An institutional hand that starts to fracture when the record stops matching the order.", ["The Watch", "Lost", "Where Are They"]],
   ["naomi", "Naomi", "Person", "Heavy", "Containment pressure with a name attached, not abstract institutional weather.", ["Scorched Earth", "Brellford Records"]],
-  ["ellison", "Ellison", "Person", "Heavy", "The architecture above Owen. Name carefully. Do not overexplain early.", ["The Receipt", "The Watch"]],
+  ["ellison", "Ellison", "Person", "Heavy", "A name at the ceiling of Owen's chain, visible only where the case file has earned it.", ["The Receipt", "The Watch"]],
   ["the-chair", "The Chair", "Chapter", "Public", "Water, restraint, and the first image of a man who knows more than the room.", ["Silas Westfall"]],
   ["mccarran-wynn", "McCarran / Wynn", "Location", "Light", "Arrival as false welcome: Las Vegas hospitality used as operational framing.", ["The Conference Room", "Owen Winters"]],
   ["the-conference-room", "The Conference Room", "Chapter", "Light", "A room where money meets money and Silas changes the pressure without raising his voice.", ["McCarran / Wynn", "Level B2"]],
@@ -380,6 +380,8 @@ function navHtml(current) {
 
 function layout({ title, description, path, current, kicker, h1, deck, cta = ["Enter The Case File", "/westfall/case-file/"], body, schema = "" }) {
   const canonical = `${baseUrl}${path}`;
+  const isHome = path === "/westfall/";
+  const routeClass = `wf-route-${path.replace(/^\/westfall\/?/, "home").replace(/\/$/g, "").replace(/[^a-z0-9]+/gi, "-").toLowerCase() || "home"}`;
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -395,13 +397,17 @@ function layout({ title, description, path, current, kicker, h1, deck, cta = ["E
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#050607" />
   <link rel="canonical" href="${canonical}" />
+  <link rel="icon" href="${baseUrl}/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="${baseUrl}/favicon.png" />
+  <link rel="apple-touch-icon" href="${baseUrl}/apple-touch-icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/westfall/styles.css?v=${version}" />
   ${schema}
 </head>
-<body class="westfall-page">
+<body class="westfall-page ${routeClass}">
+  <a class="wf-skip" href="#main">Skip to case file</a>
   <div class="wf-shell">
     <header class="wf-topbar">
       <div class="wf-topbar__inner">
@@ -415,11 +421,22 @@ function layout({ title, description, path, current, kicker, h1, deck, cta = ["E
     </header>
 
     <main id="main">
-      <section class="wf-hero${current === "Case" ? "" : " wf-hero--plain"}">
+      <section class="wf-hero${isHome ? "" : " wf-hero--plain"}">
+        <div class="wf-hero__weather" aria-hidden="true"></div>
+        ${isHome ? `<div class="wf-hero__case-rail" aria-hidden="true">
+          <span class="wf-rail-label">BRELLFORD / PUBLIC BRIEF</span>
+          <span>Terminal 7 contradicts the handler narrative.</span>
+          <span>Branch 7 stops being a rumor and becomes a roster.</span>
+          <span>ALL IN turns trust into evidence.</span>
+        </div>` : ""}
         <div class="wf-hero__inner">
           <p class="wf-kicker">${escapeHtml(kicker)}</p>
           <h1${current === "Case" ? "" : ' class="wf-page-title"'}>${escapeHtml(h1)}</h1>
           <p class="wf-deck">${escapeHtml(deck)}</p>
+          <div class="wf-hero__actions wf-hero__actions--lead">
+            <a class="wf-button wf-button--solid" href="${cta[1]}">${escapeHtml(cta[0])}</a>
+            ${isHome ? '<a class="wf-button" href="/westfall/lore/">Open Lore Dossiers</a>' : '<a class="wf-button" href="/westfall/">Back To WESTFALL</a>'}
+          </div>
         </div>
       </section>
 ${body}
@@ -430,7 +447,7 @@ ${body}
         <div>
           <h2>WESTFALL</h2>
           <p>A modern conspiracy thriller by Zac Gibson.</p>
-          <p class="wf-mini">Meridian is a hidden program inside Brellford. If a page makes it look public, the page is wrong.</p>
+          <!-- Canon guardrail: Meridian is a hidden program inside Brellford, not a public brand. -->
         </div>
         <div>
           <h3>Explore</h3>
@@ -545,7 +562,7 @@ write("westfall/index.html", layout({
   current: "Case",
   kicker: "Book-first case-file thriller",
   h1: "WESTFALL",
-  deck: "A modern conspiracy thriller about Silas Westfall, an active operator who joins Brellford under false authority and discovers that the orders were the trap.",
+  deck: "A modern conspiracy thriller about an active operator, a handler's false authority, and the proof that turns orders into evidence.",
   cta: ["Enter The Case File", "/westfall/case-file/"],
   schema: bookSchema,
   body: `
@@ -571,8 +588,8 @@ ${section("", `
               <p class="wf-label">Ordinary surfaces, catastrophic meaning</p>
               <h2 class="wf-heading">The lie is not a twist. It is a system.</h2>
               <div class="wf-copy">
-                <p>WESTFALL follows a man trained to read rooms, survive pressure, and obey orders that sound legitimate until the evidence starts arriving out of sequence.</p>
-                <p>The public site now behaves the same way: clean hook first, spoiler-labeled case files second, deeper dossiers only when the reader chooses to open them.</p>
+                <p>Silas Westfall is trained to survive pressure, read rooms, and trust a chain of command that sounds legitimate until ordinary proof starts contradicting it.</p>
+                <p>The story does not ask the reader to believe in a conspiracy because someone says the word. It builds the case through a public computer, a roster, a cache, a witness, and records that make the official version impossible.</p>
               </div>
               <blockquote class="wf-quote">The orders were the trap.</blockquote>
             </div>
@@ -617,7 +634,7 @@ ${section("", `
             card({ href: "/westfall/lore/collin-mathis/", tag: "Source", title: "Collin Mathis", text: "The source who leaves proof where a trained man can find it." }),
             card({ href: "/westfall/lore/melanie/", tag: "Witness", title: "Melanie", text: "The witness the official story needed dead." }),
             card({ href: "/westfall/lore/marcus/", tag: "Fracture", title: "Marcus", text: "The institutional hand that starts to fracture under proof." }),
-            card({ href: "/westfall/lore/ellison/", tag: "Architecture", title: "Ellison", text: "The architecture above Owen. Name carefully. Do not overexplain early." })
+            card({ href: "/westfall/lore/ellison/", tag: "Architecture", title: "Ellison", text: "A name at the ceiling of Owen's chain, visible only where the case file has earned it." })
           ], "wf-grid wf-grid--three")}
           <div class="wf-actions"><a class="wf-button wf-button--solid" href="/westfall/lore/">Open The Lore Dossiers</a></div>`)}
 ${section("wf-section--paper", `
@@ -1034,7 +1051,7 @@ ${section("", `
           ${rows([
             ["Category", "Modern conspiracy thriller"],
             ["Audience", "Readers who like tradecraft, institutional betrayal, evidence puzzles, and emotionally costly reversals."],
-            ["Comparable lane", "Prestige thriller energy, proof-object storytelling, and a transmedia-ready world without fake awards or fake reviews."],
+            ["Comparable lane", "Prestige thriller energy, proof-object storytelling, and a transmedia-ready world with a disciplined public canon."],
             ["Contact", "Use the public Zac Gibson links on zacgibson.work for collaborator outreach."]
           ])}`)}
 ${section("wf-section--paper", `
@@ -1666,6 +1683,396 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   body.westfall-page::before { display: none; }
+}
+
+/* Premium polish pass: cinematic case-file surface, no new lore assumptions. */
+.wf-skip {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 100;
+  transform: translateY(-180%);
+  padding: 10px 14px;
+  border: 1px solid var(--wf-amber);
+  background: var(--wf-black);
+  color: var(--wf-amber);
+  font-family: var(--wf-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.wf-skip:focus { transform: translateY(0); }
+
+body.westfall-page {
+  background:
+    linear-gradient(180deg, rgba(5, 6, 7, 0.78), #050607 42%, #030404 100%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 98px),
+    var(--wf-black);
+}
+
+body.westfall-page::before {
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.026) 0 1px, transparent 1px 5px),
+    linear-gradient(112deg, rgba(125, 145, 161, 0.08), transparent 31% 68%, rgba(255, 214, 10, 0.035));
+  opacity: 0.44;
+}
+
+.wf-topbar {
+  border-bottom-color: rgba(231, 224, 211, 0.14);
+  background: rgba(3, 4, 4, 0.78);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 45px rgba(0, 0, 0, 0.34);
+}
+
+.wf-brand__mark {
+  width: 34px;
+  height: 34px;
+  border-color: rgba(255, 214, 10, 0.44);
+  background:
+    linear-gradient(180deg, rgba(255, 214, 10, 0.13), rgba(255, 255, 255, 0.02)),
+    #080a0a;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), 0 0 24px rgba(255, 214, 10, 0.1);
+}
+
+.wf-nav a {
+  position: relative;
+  color: rgba(245, 242, 236, 0.64);
+}
+.wf-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 160ms ease;
+}
+.wf-nav a:hover::after, .wf-nav a[aria-current="page"]::after { transform: scaleX(1); }
+
+.wf-cta, .wf-button, .wf-pill, .wf-track-button, .wf-menu-toggle {
+  border-color: rgba(231, 224, 211, 0.26);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.015)),
+    rgba(9, 12, 13, 0.84);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+.wf-cta:hover, .wf-button:hover, .wf-pill:hover, .wf-track-button:hover, .wf-menu-toggle:hover {
+  transform: translateY(-1px);
+}
+.wf-button--solid {
+  border-color: rgba(255, 214, 10, 0.86);
+  background:
+    linear-gradient(180deg, #ffe16a, #ffd60a 54%, #c99c05),
+    var(--wf-amber);
+  color: #050607;
+  box-shadow: 0 12px 38px rgba(255, 214, 10, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.wf-hero {
+  min-height: calc(100svh - 0px);
+  isolation: isolate;
+  background:
+    linear-gradient(90deg, rgba(3, 4, 4, 0.98) 0%, rgba(3, 4, 4, 0.82) 43%, rgba(3, 4, 4, 0.38) 100%),
+    linear-gradient(180deg, rgba(5, 6, 7, 0.02), rgba(5, 6, 7, 0.94)),
+    #050607;
+}
+.wf-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  background: url("${heroImage}") center right / min(76vw, 1040px) auto no-repeat;
+  opacity: 0.72;
+  filter: saturate(0.78) contrast(1.18) brightness(0.86);
+}
+.wf-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 0 50%, rgba(5, 6, 7, 0.92) 92%),
+    repeating-linear-gradient(90deg, transparent 0 119px, rgba(231, 224, 211, 0.055) 120px 121px),
+    repeating-linear-gradient(180deg, transparent 0 79px, rgba(231, 224, 211, 0.035) 80px 81px);
+  mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.2) 72%, transparent);
+}
+.wf-hero__weather {
+  position: absolute;
+  inset: -12% 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(106deg, transparent 0 28px, rgba(125, 145, 161, 0.16) 29px 30px, transparent 31px 88px);
+  opacity: 0.22;
+  transform: translate3d(0, 0, 0);
+  animation: wfRain 12s linear infinite;
+}
+@keyframes wfRain {
+  from { background-position: 0 0; }
+  to { background-position: -180px 420px; }
+}
+.wf-hero__inner {
+  position: relative;
+  z-index: 2;
+  padding-top: 138px;
+  padding-bottom: 96px;
+}
+.wf-hero h1, .wf-page-title {
+  max-width: 980px;
+  margin: 16px 0 20px;
+  font-size: 112px;
+  font-weight: 720;
+  line-height: 0.9;
+  text-shadow: 0 18px 60px rgba(0, 0, 0, 0.76);
+}
+.wf-deck {
+  max-width: 720px;
+  color: rgba(245, 242, 236, 0.88);
+  text-shadow: 0 14px 38px rgba(0, 0, 0, 0.88);
+}
+.wf-kicker, .wf-label, .wf-meta, .wf-tagline {
+  color: rgba(255, 214, 10, 0.78);
+}
+.wf-hero__actions--lead { margin-top: 34px; }
+.wf-hero__case-rail {
+  position: absolute;
+  right: max(24px, calc((100vw - var(--wf-max)) / 2));
+  bottom: 64px;
+  z-index: 3;
+  width: min(420px, 34vw);
+  display: grid;
+  gap: 0;
+  border: 1px solid rgba(231, 224, 211, 0.2);
+  background:
+    linear-gradient(180deg, rgba(11, 15, 16, 0.82), rgba(5, 6, 7, 0.9)),
+    rgba(8, 11, 12, 0.86);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.42);
+}
+.wf-hero__case-rail span {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(231, 224, 211, 0.11);
+  color: rgba(245, 242, 236, 0.74);
+  font-family: var(--wf-mono);
+  font-size: 12px;
+  line-height: 1.45;
+}
+.wf-hero__case-rail span:last-child { border-bottom: 0; }
+.wf-hero__case-rail .wf-rail-label {
+  color: var(--wf-amber);
+  background: rgba(255, 214, 10, 0.08);
+}
+
+.wf-hero-extension {
+  padding: 0 0 56px;
+  margin-top: -42px;
+  position: relative;
+  z-index: 4;
+}
+.wf-proof-rail {
+  border-color: rgba(231, 224, 211, 0.18);
+  background:
+    linear-gradient(180deg, rgba(16, 20, 22, 0.92), rgba(8, 11, 12, 0.92)),
+    rgba(16, 20, 22, 0.86);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.32);
+}
+.wf-proof-rail span {
+  min-height: 90px;
+  border-color: rgba(231, 224, 211, 0.11);
+}
+
+.wf-section {
+  position: relative;
+  border-bottom-color: rgba(231, 224, 211, 0.1);
+}
+.wf-section:not(.wf-section--paper) {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.012), transparent 42%),
+    transparent;
+}
+.wf-section--paper {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(237, 231, 219, 0.98), rgba(198, 188, 168, 0.95)),
+    repeating-linear-gradient(0deg, rgba(23, 21, 18, 0.03) 0 1px, transparent 1px 9px),
+    var(--wf-paper);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46), inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+}
+.wf-heading {
+  font-size: 46px;
+  font-weight: 680;
+}
+.wf-copy {
+  color: rgba(245, 242, 236, 0.7);
+}
+
+.wf-panel, .wf-dossier-card, .wf-track, .wf-evidence-card, .wf-readbox {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(231, 224, 211, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015)),
+    rgba(12, 16, 17, 0.82);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+.wf-panel::before, .wf-dossier-card::before, .wf-evidence-card::before, .wf-readbox::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--wf-amber), rgba(111, 157, 96, 0.62), transparent);
+  opacity: 0.8;
+}
+.wf-panel:hover, .wf-dossier-card:hover, .wf-evidence-card:hover {
+  border-color: rgba(255, 214, 10, 0.48);
+  background:
+    linear-gradient(180deg, rgba(255, 214, 10, 0.07), rgba(255, 255, 255, 0.018)),
+    rgba(12, 16, 17, 0.9);
+}
+.wf-panel h3, .wf-dossier-card h3, .wf-track h3, .wf-evidence-card h3, .wf-readbox h3 {
+  font-size: 24px;
+  font-weight: 680;
+}
+
+.wf-table {
+  border-color: rgba(231, 224, 211, 0.13);
+  background: rgba(3, 4, 4, 0.18);
+}
+.wf-evidence-card .wf-table, .wf-panel .wf-table {
+  border: 0;
+  background: transparent;
+}
+.wf-evidence-card .wf-row, .wf-panel .wf-row {
+  background: transparent;
+  border-color: rgba(231, 224, 211, 0.1);
+  padding-left: 0;
+  padding-right: 0;
+}
+.wf-section--paper .wf-evidence-card .wf-row,
+.wf-section--paper .wf-panel .wf-row {
+  border-color: rgba(23, 21, 18, 0.14);
+}
+
+.wf-terminal, .wf-track-console {
+  position: relative;
+  border-color: rgba(111, 157, 96, 0.48);
+  background:
+    linear-gradient(180deg, rgba(111, 157, 96, 0.12), rgba(5, 6, 7, 0.34)),
+    repeating-linear-gradient(0deg, rgba(184, 224, 172, 0.045) 0 1px, transparent 1px 18px),
+    #06100a;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(184, 224, 172, 0.08);
+}
+.wf-terminal::after, .wf-track-console::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  width: 8px;
+  height: 8px;
+  background: var(--wf-signal);
+  box-shadow: 0 0 18px rgba(111, 157, 96, 0.8);
+}
+
+.wf-timeline-entry a {
+  border-color: rgba(231, 224, 211, 0.13);
+  background:
+    linear-gradient(90deg, rgba(255, 214, 10, 0.055), transparent 24%),
+    rgba(16, 20, 22, 0.78);
+}
+.wf-timeline-index {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 214, 10, 0.34);
+  background: rgba(255, 214, 10, 0.08);
+}
+
+.wf-wave span {
+  background: linear-gradient(180deg, #ffe16a, rgba(111, 157, 96, 0.86) 58%, rgba(125, 145, 161, 0.42));
+  box-shadow: 0 0 18px rgba(255, 214, 10, 0.08);
+  transform-origin: bottom;
+  animation: wfPulse 1500ms ease-in-out infinite alternate;
+}
+.wf-wave span:nth-child(3n) { animation-delay: 140ms; }
+.wf-wave span:nth-child(4n) { animation-delay: 320ms; }
+@keyframes wfPulse {
+  from { transform: scaleY(0.72); opacity: 0.62; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+.wf-footer {
+  border-top: 1px solid rgba(231, 224, 211, 0.12);
+  background:
+    linear-gradient(180deg, #050607, #020303),
+    #040505;
+}
+
+@media (max-width: 980px) {
+  .wf-hero h1, .wf-page-title { font-size: 86px; }
+  .wf-hero__case-rail { display: none; }
+}
+
+@media (max-width: 760px) {
+  .wf-topbar__inner { width: min(var(--wf-max), calc(100% - 24px)); }
+  .wf-nav a { min-height: 48px; }
+  .wf-hero {
+    min-height: min(760px, 88svh);
+    align-items: end;
+  }
+  .wf-hero::before {
+    background-position: top center;
+    background-size: 520px auto;
+    opacity: 0.48;
+    mask-image: linear-gradient(180deg, black 0 46%, transparent 72%);
+  }
+  .wf-hero::after {
+    mask-image: linear-gradient(180deg, black, transparent 78%);
+  }
+  .wf-hero__inner {
+    padding-top: 232px;
+    padding-bottom: 36px;
+  }
+  .wf-hero h1, .wf-page-title { font-size: 58px; }
+  .wf-hero__actions--lead .wf-button { flex: 1 1 100%; }
+  .wf-hero-extension {
+    margin-top: 0;
+    padding-bottom: 30px;
+  }
+  .wf-proof-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wf-proof-rail span {
+    min-height: 86px;
+    border-right: 1px solid rgba(231, 224, 211, 0.11);
+  }
+  .wf-proof-rail span:nth-child(2n) { border-right: 0; }
+  .wf-proof-rail span:last-child {
+    grid-column: 1 / -1;
+    border-top: 1px solid rgba(231, 224, 211, 0.11);
+  }
+  .wf-heading { font-size: 34px; }
+}
+
+@media (max-width: 440px) {
+  .wf-hero::before { background-size: 410px auto; }
+  .wf-hero { min-height: min(720px, 86svh); }
+  .wf-hero__inner { padding-top: 188px; }
+  .wf-hero h1, .wf-page-title { font-size: 48px; }
+  .wf-deck { font-size: 17px; }
+  .wf-proof-rail { grid-template-columns: 1fr; }
+  .wf-proof-rail span, .wf-proof-rail span:nth-child(2n) { border-right: 0; }
+  .wf-proof-rail span:last-child { grid-column: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wf-hero__weather, .wf-wave span { animation: none; }
+  .wf-cta, .wf-button, .wf-pill, .wf-track-button, .wf-menu-toggle { transition: none; }
 }
 `);
 
