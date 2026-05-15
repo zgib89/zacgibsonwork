@@ -50,7 +50,20 @@
 
   ::selection { background: var(--accent); color: #000; }
 
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+  }
+  main { position: relative; z-index: 2; }
+
   a { color: inherit; text-decoration: none; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
 
   main {
     max-width: 640px;
@@ -77,6 +90,10 @@
     letter-spacing: -0.04em;
     line-height: 1;
     margin-bottom: 18px;
+    background: linear-gradient(180deg, var(--text) 0%, #d4d4d8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   .roles {
@@ -87,6 +104,22 @@
     letter-spacing: 0.01em;
   }
   .roles .dot { color: var(--text-3); padding: 0 8px; }
+  .roles .pulse {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 rgba(255, 214, 10, 0.7);
+    animation: pulse 2s infinite;
+    margin-right: 8px;
+    vertical-align: 1px;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 214, 10, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(255, 214, 10, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 214, 10, 0); }
+  }
 
   .intro {
     margin-top: 28px;
@@ -120,6 +153,7 @@
   .stack dt { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
   .stack dd { font-family: var(--mono); font-size: 13.5px; color: var(--text-2); line-height: 1.7; }
   .stack dd .sep { color: var(--text-3); padding: 0 7px; }
+  .stack dd:hover { color: var(--text); transition: color 220ms ease; }
 
   /* PROJECTS */
   .projects { display: flex; flex-direction: column; }
@@ -150,7 +184,8 @@
     align-self: center;
     transition: transform 240ms cubic-bezier(.2,.6,.2,1), color 200ms;
   }
-  .project:hover .arrow { color: var(--accent); transform: translateX(4px); }
+  .project:hover .arrow { color: var(--accent); transform: translateX(6px); }
+  .project:focus-visible { outline: none; padding-left: 8px; background: linear-gradient(90deg, rgba(255,214,10,0.04), transparent 80%); }
 
   .project .desc {
     grid-column: 1;
@@ -236,8 +271,8 @@
 
   <header class="reveal">
     <h1 class="name">Zac Gibson</h1>
-    <p class="roles">IAM<span class="dot">·</span>Developer<span class="dot">·</span>Author</p>
-    <p class="intro">Identity &amp; access by day. Apps and AI tools the rest of the time. Currently writing a novel.</p>
+    <p class="roles"><span class="pulse" aria-hidden="true"></span>IAM<span class="dot">·</span>Developer<span class="dot">·</span>Author</p>
+    <p class="intro">Identity &amp; access by day. <strong>Apps and AI tools</strong> the rest of the time. Currently building <a href="/westfall/"><strong>WESTFALL</strong></a>, a book-first conspiracy thriller told through evidence, lore, soundtrack, and game adaptation.</p>
   </header>
 
   <section class="reveal">
@@ -259,11 +294,23 @@
   <section class="reveal">
     <div class="label">Work</div>
     <div class="projects">
+      <a class="project" href="https://zacgibson.work/portfolio-builder" target="_blank" rel="noopener">
+        <span class="title">Personal Portfolio Builder</span>
+        <span class="arrow">&rarr;</span>
+        <p class="desc">Self-hosted portfolio composer with deterministic templates, section schemas, live preview, and Astro export.</p>
+        <p class="meta">Astro 6<span class="sep">·</span>React islands<span class="sep">·</span>Supabase schema<span class="sep">·</span>Cloudflare<span class="sep">·</span>no AI runtime<span class="sep">·</span><span class="domain">zacgibson.work/portfolio-builder</span></p>
+      </a>
       <a class="project" href="https://jotterdown.app" target="_blank" rel="noopener">
         <span class="title">JotterDown</span>
         <span class="arrow">&rarr;</span>
         <p class="desc">AI writing app for novelists. Character psychology, branching timelines, prose analysis.</p>
         <p class="meta">Next.js<span class="sep">·</span>TipTap<span class="sep">·</span>Supabase<span class="sep">·</span>Stripe<span class="sep">·</span>Claude<span class="sep">·</span><span class="domain">jotterdown.app</span></p>
+      </a>
+      <a class="project" href="/westfall/">
+        <span class="title">WESTFALL</span>
+        <span class="arrow">&rarr;</span>
+        <p class="desc">Book-first case-file universe for a modern conspiracy thriller: Silas Westfall, Brellford, Terminal 7, and the proof chain that turns orders into evidence.</p>
+        <p class="meta">Novel<span class="sep">·</span>60-route case-file site<span class="sep">·</span>lore dossiers<span class="sep">·</span>soundtrack lab<span class="sep">·</span>top-down game direction<span class="sep">·</span><span class="domain">zacgibson.work/westfall</span></p>
       </a>
       <a class="project" href="https://righteousrecon.com" target="_blank" rel="noopener">
         <span class="title">Righteous Recon</span>
@@ -308,7 +355,7 @@
     </dl>
   </section>
 
-  <footer class="reveal">One file. No build. Cloudflare Pages.</footer>
+  <footer class="reveal">One file<span style="color:var(--text-3);padding:0 8px;">·</span>No build<span style="color:var(--text-3);padding:0 8px;">·</span>Cloudflare Pages</footer>
 
 </main>
 </body>
